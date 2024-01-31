@@ -11,31 +11,40 @@ Blue = [6.00449072, 3.34005839, 6.71096916, 4.11113061, 5.68416528,
 Red = [6.36086896, 5.65584783, 7.62912922, 13.29826146, 5.99876216,
 8.14484021, 9.74488991, 6.616229, 14.26793535, 0.98932393]
 
-#Initial values 
-QG = 0
-QB = 0
-QR = 0
+# Initial values 
+Q_values = [0, 0, 0]  # QG, QB, QR
 
-#Number of times a choice has been selected
-NG = 0
-NB = 0
-NR = 0
+# Number of times a choice has been selected
+N_counts = [0, 0, 0]  # NG, NB, NR
 
 #Epsilon 
 EPSILON = 0.01
 
 '''
-        Steps
+    Steps
 
-        1. Find the greedy action => find the action to take
-        2. Generate the random reward
-        --> from the list
-        -- follow a distribution
-        3. Update the Q from the action
+    1. Find the greedy action => find the action to take
+    2. Generate the random reward
+    --> from the list
+    -- follow a distribution
+    3. Update the Q from the action
 
-        All three steps are functions 
-    '''
+    All three steps are functions 
+'''
 
+# Choose action function
+def choose_action(Q_values, EPSILON):
+    if random.random() < EPSILON:
+        # Exploration: choose a random action
+        return random.randint(0, len(Q_values) - 1)
+    else:
+        # Exploitation: choose the greedy action (max Q value)
+        # In case of ties, choose randomly among the tied actions
+        max_value = max(Q_values)
+        greedy_actions = [i for i, q in enumerate(Q_values) if q == max_value]
+        return random.choice(greedy_actions)
+
+# Reward function
 def get_reward(action):
     if action == 0:
         return random.choice(Green)
@@ -44,3 +53,19 @@ def get_reward(action):
     else:
         return random.choice(Red)
 
+# Update Q value function
+def update_Q(N_counts, Q_values, action, reward):
+    # Increment the count for the chosen action
+    N_counts[action] += 1
+    # Update Q value for the chosen action
+    Q_values[action] += (1 / N_counts[action]) * (reward - Q_values[action])
+
+# Main loop
+for _ in range(100):  # Loop 100 times or however many iterations you want
+    action = choose_action(Q_values, EPSILON)
+    reward = get_reward(action)
+    update_Q(N_counts, Q_values, action, reward)
+
+# Print the final values
+print("Q-values:", Q_values)
+print("N-counts:", N_counts)
