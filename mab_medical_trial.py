@@ -1,5 +1,5 @@
-#Possible rewards for each selection
 import random
+import matplotlib.pyplot as plt
 
 Green = [4.77317728, 5.99791051, 5.76776377, 4.47913849, 6.21411927,
 6.84915318, 8.44082357, 6.15266159, 6.97135381, 7.43452167]
@@ -67,21 +67,25 @@ for _ in range(100):  # Loop 100 times or however many iterations you want
         QB.append(reward)
     else:
         QR.append(reward)
-    # Increment the count for the chosen action
-    N_counts[action] += 1
 
-# Calculate the average of the Q values
-average_QG = sum(QG)/len(QG) if QG else 0
-average_QB = sum(QB)/len(QB) if QB else 0
-average_QR = sum(QR)/len(QR) if QR else 0
+# Function to calculate the cumulative average of rewards
+def cumulative_average(rewards):
+    return [sum(rewards[:i+1]) / (i+1) for i in range(len(rewards))]
 
-# Print the average Q values and the lists
-print("Average Q-values:")
-print("Green:", average_QG)
-print("Blue:", average_QB)
-print("Red:", average_QR)
-print("\nQ-values arrays:")
-print("QG:", QG)
-print("QB:", QB)
-print("QR:", QR)
-print("\nN-counts:", N_counts)
+# Calculate the cumulative average of the Q values
+cumulative_avg_G = cumulative_average(QG)
+cumulative_avg_B = cumulative_average(QB)
+cumulative_avg_R = cumulative_average(QR)
+
+# Generate the plot
+plt.figure(figsize=(12, 6))
+plt.plot(range(len(cumulative_avg_G)), cumulative_avg_G, label='Green')
+plt.plot(range(len(cumulative_avg_B)), cumulative_avg_B, label='Blue')
+plt.plot(range(len(cumulative_avg_R)), cumulative_avg_R, label='Red')
+
+plt.xlabel('Number of times the choice has been taken')
+plt.ylabel('Average Reward')
+plt.title('Average Reward vs. Number of Actions Taken')
+plt.legend()
+plt.xlim([0, 100])
+plt.show()
