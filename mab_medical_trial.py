@@ -1,6 +1,13 @@
 import random
 import matplotlib.pyplot as plt
 
+'''
+To view generated graph install library as command:
+
+pip install matplotlib
+
+'''
+
 Green = [4.77317728, 5.99791051, 5.76776377, 4.47913849, 6.21411927,
 6.84915318, 8.44082357, 6.15266159, 6.97135381, 7.43452167]
 
@@ -11,9 +18,9 @@ Red = [6.36086896, 5.65584783, 7.62912922, 13.29826146, 5.99876216,
 8.14484021, 9.74488991, 6.616229, 14.26793535, 0.98932393]
 
 # Initial values 
-QG = []
-QB = []
-QR = []
+QG = [0]
+QB = [0]
+QR = [0]
 
 # Number of times a choice has been selected
 N_counts = [0, 0, 0]  # NG, NB, NR
@@ -35,9 +42,7 @@ EPSILON = 0.01
 
 # Choose action function
 def choose_action(QG, QB, QR, EPSILON):
-    Q_values = [sum(QG)/len(QG) if QG else 0,
-                sum(QB)/len(QB) if QB else 0,
-                sum(QR)/len(QR) if QR else 0]
+    Q_values = [QG[-1], QB[-1], QR[-1]]
     if random.random() < EPSILON:
         # Exploration: choose a random action
         return random.randint(0, 2)
@@ -57,35 +62,35 @@ def get_reward(action):
         return random.choice(Red)
 
 # Main loop
-for _ in range(100):  # Loop 100 times or however many iterations you want
+for _ in range(100):  # Loop 100 times
     action = choose_action(QG, QB, QR, EPSILON)
     reward = get_reward(action)
-    # Store the reward
+    
+    # Update Q values based on the average
     if action == 0:
-        QG.append(reward)
+        QG.append((QG[-1] * N_counts[0] + reward) / (N_counts[0] + 1))
+        N_counts[0] += 1
     elif action == 1:
-        QB.append(reward)
+        QB.append((QB[-1] * N_counts[1] + reward) / (N_counts[1] + 1))
+        N_counts[1] += 1
     else:
-        QR.append(reward)
+        QR.append((QR[-1] * N_counts[2] + reward) / (N_counts[2] + 1))
+        N_counts[2] += 1
 
-# Function to calculate the cumulative average of rewards
-def cumulative_average(rewards):
-    return [sum(rewards[:i+1]) / (i+1) for i in range(len(rewards))]
-
-# Calculate the cumulative average of the Q values
-cumulative_avg_G = cumulative_average(QG)
-cumulative_avg_B = cumulative_average(QB)
-cumulative_avg_R = cumulative_average(QR)
+# Print the final counts
+print(f"Final Counts: Green selected {N_counts[0]} times, Blue selected {N_counts[1]} times, Red selected {N_counts[2]} times")
 
 # Generate the plot
 plt.figure(figsize=(12, 6))
-plt.plot(range(len(cumulative_avg_G)), cumulative_avg_G, label='Green')
-plt.plot(range(len(cumulative_avg_B)), cumulative_avg_B, label='Blue')
-plt.plot(range(len(cumulative_avg_R)), cumulative_avg_R, label='Red')
+plt.plot(range(len(QG)), QG, label='Green')
+plt.plot(range(len(QB)), QB, label='Blue')
+plt.plot(range(len(QR)), QR, label='Red')
 
 plt.xlabel('Number of times the choice has been taken')
-plt.ylabel('Average Reward')
-plt.title('Average Reward vs. Number of Actions Taken')
+plt.ylabel('Average Q Value')
+plt.title('Average Q Value vs. Number of Actions Taken')
 plt.legend()
 plt.xlim([0, 100])
+
+plt.savefig('reward_plot.png')
 plt.show()
