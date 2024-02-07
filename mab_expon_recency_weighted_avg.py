@@ -56,16 +56,16 @@ for t in range(1, 101):  # Loop 100 times
     action = choose_action(QG, QB, QR, EPSILON)
     reward = get_reward(action)
     
-    # Update Q values based on the average
+    # Update Q values based on the incremental update rule
     if action == 0:
         N_counts[0] += 1
-        QG.append((QG[-1] * (N_counts[0] - 1) + reward) / N_counts[0])
+        QG.append(QG[-1] + (1 / N_counts[0]) * (reward - QG[-1]))
     elif action == 1:
         N_counts[1] += 1
-        QB.append((QB[-1] * (N_counts[1] - 1) + reward) / N_counts[1])
+        QB.append(QB[-1] + (1 / N_counts[1]) * (reward - QB[-1]))
     else:
         N_counts[2] += 1
-        QR.append((QR[-1] * (N_counts[2] - 1) + reward) / N_counts[2])
+        QR.append(QR[-1] + (1 / N_counts[2]) * (reward - QR[-1]))
     
     # Track the evolution of estimated values
     QG_evolution.append(QG[-1])
@@ -88,7 +88,7 @@ plt.title('Estimated Value vs. Number of Iterations')
 plt.legend()
 
 # Save the estimated values plot as 'estimated_values_plot.png'
-plt.savefig('estimated_values_plot.png')
+plt.savefig('/mnt/data/estimated_values_plot.png')
 plt.show()
 
 # Generate the plot for average rewards
@@ -98,8 +98,4 @@ plt.plot(range(len(average_rewards)), average_rewards, label='Average Reward')
 plt.xlabel('Number of iterations')
 plt.ylabel('Average Reward')
 plt.title('Average Reward vs. Number of Iterations')
-plt.legend()
-
-# Save the average rewards plot as 'average_rewards_plot.png'
-plt.savefig('average_rewards_plot.png')
-plt.show()
+plt.legend
