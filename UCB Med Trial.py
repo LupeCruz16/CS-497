@@ -13,9 +13,9 @@ Red = [6.36086896, 5.65584783, 7.62912922, 13.29826146, 5.99876216,
        8.14484021, 9.74488991, 6.616229, 14.26793535, 0.98932393]
  
 # Initial values
-QG = [0]  # Estimated value for Green
-QB = [0]  # Estimated value for Blue
-QR = [0]  # Estimated value for Red
+QG = [15] 
+QB = [15]  
+QR = [15] 
 
 # Number of times each choice has been selected
 N_counts = [0, 0, 0]  # NG, NB, NR
@@ -35,6 +35,7 @@ def choose_action_ucb(QG, QB, QR, N_counts, C, t):
     for q, n in zip(Q_values, N_counts):
         # Calculate the UCB value for the action
         ucb = q + C * math.sqrt(math.log(t) / (n + 1))
+
         # Append the UCB value to the list
         ucb_values.append(ucb)
     
