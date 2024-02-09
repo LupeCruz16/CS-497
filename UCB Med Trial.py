@@ -81,6 +81,7 @@ plt.xlabel('Number of iterations')
 plt.ylabel('Estimated Value (Average Q Value)')
 plt.title('Estimated Value vs. Number of Iterations')
 plt.legend()
+plt.savefig('estimated_values_plot.png')
 plt.show()  # Display the figure
 
 # Generate the plot for average rewards
@@ -91,4 +92,5 @@ plt.xlabel('Number of iterations')
 plt.ylabel('Average Reward')
 plt.title('Average Reward vs. Number of Iterations')
 plt.legend()
+plt.savefig('avg_rewards.png')
 plt.show()  # Display the figure
