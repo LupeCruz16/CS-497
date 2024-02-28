@@ -51,7 +51,7 @@ def page_rank(links, d=0.85, epsilon=0.01, max_iterations=100):
     return ranks
 
 # Diagram from the user's description
-links = {
+links = { #Used instead of a double array
     'A': [],
     'B': ['A', 'C'],
     'C': ['A'],
