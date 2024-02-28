@@ -41,6 +41,7 @@ def page_rank(links, d=0.85, epsilon=0.01, max_iterations=100):
 
         # Check convergence by summing the absolute rank changes
         if sum(abs(new_ranks[page] - ranks[page]) for page in ranks) < epsilon:
+            converged()
             ranks = new_ranks
             break
         ranks = new_ranks
@@ -51,6 +52,9 @@ def page_rank(links, d=0.85, epsilon=0.01, max_iterations=100):
         ranks[page] /= normalization_factor
     
     return ranks
+
+def converged():
+    print("Converged before reaching max itterations")
 
 # Diagram from the user's description
 links = { #Used instead of a double array
