@@ -1,4 +1,4 @@
-def page_rank(links, d=0.85, epsilon=0.01, max_iterations=100):
+def page_rank(links, d=0.85, epsilon=0.01, max_iterations=100): 
     """
     Calculate the PageRank of each page using the PageRank algorithm.
 
