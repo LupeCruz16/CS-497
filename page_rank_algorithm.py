@@ -17,6 +17,8 @@ def page_rank(links, d=0.85, epsilon=0.01, max_iterations=100):
     sinks = [page for page in links if not links[page]]
     for sink in sinks:
         links[sink] = [p for p in links if p != sink]
+
+    #Step 2: Dampening factor was implemented on function call
     
     # Step 3: Initialize all ranks to be 1/N
     ranks = {page: 1/N for page in links}
@@ -50,8 +52,8 @@ def page_rank(links, d=0.85, epsilon=0.01, max_iterations=100):
     
     return ranks
 
-# Diagram from the user's description
-links = {
+# Diagram of existing links
+links = { #Used instead of a double array
     'A': [],
     'B': ['A', 'C'],
     'C': ['A'],
