@@ -56,18 +56,25 @@ def calculate_optimal_policy(v_function):
         for j in range(4):
             # Skip the terminal states
             if (i == 0 and j == 0) or (i == 3 and j == 3):
-                policy[i, j] = "None".ljust(6)
+                policy[i, j] = "None".ljust(12)
                 continue
+            best_actions = []
             best_action_value = float('-inf')
-            best_action = None
-            # Try all possible actions to find the best for the current state
+            # Find the best action(s) for the current state
             for action in actions:
                 (next_i, next_j), _ = next_state_reward((i, j), action)
                 action_value = v_function[next_i, next_j]
-                if action_value > best_action_value:
+                if action_value == best_action_value:
+                    best_actions.append(action)
+                elif action_value > best_action_value:
                     best_action_value = action_value
-                    best_action = action
-            policy[i, j] = best_action.ljust(6)
+                    best_actions = [action]
+            # Format the best actions
+            if len(best_actions) == len(actions):
+                policy[i, j] = "all".ljust(12)
+            else:
+                best_actions_str = ', '.join(best_actions)
+                policy[i, j] = best_actions_str.ljust(12)
     return policy
 
 # Run value iteration
