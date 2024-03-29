@@ -26,12 +26,7 @@ def value_iteration(v_function, gamma, threshold):
     iteration = 0
     while True:
         delta = 0
-        print(f"\n\nIteration {iteration}:")
-        print("Value Function:")
-        print(v_function)
-        optimal_policy = calculate_optimal_policy(v_function)
-        print("Optimal Policy:")
-        print(optimal_policy)
+        new_v_function = v_function.copy()  # Create a copy of the value function
         for i in range(4):
             for j in range(4):
                 # Skip the terminal states
@@ -42,12 +37,22 @@ def value_iteration(v_function, gamma, threshold):
                 for action in actions:
                     (next_i, next_j), _ = next_state_reward((i, j), action)
                     new_values.append(reward + gamma * v_function[next_i, next_j])
-                v_function[i, j] = max(new_values)
-                delta = max(delta, abs(old_value - v_function[i, j]))
+                new_v_function[i, j] = max(new_values)
+                delta = max(delta, abs(old_value - new_v_function[i, j]))
+        print(f"\n\nIteration {iteration}:")
+        print("Value Function:")
+        print(new_v_function)
         if delta < threshold:
+            # Once converged, find the optimal policy
+            optimal_policy = calculate_optimal_policy(new_v_function)
+            print(f"\n\nIteration {iteration}:\nValue function converged. Optimal Policy:")
+            print(new_v_function)
+            print("\nOptimal Policy: ")
+            print(optimal_policy)
             break
+        v_function = new_v_function  # Update the value function
         iteration += 1
-    return v_function
+    return new_v_function
 
 # Function to calculate the optimal policy for each state based on the value function
 def calculate_optimal_policy(v_function):
