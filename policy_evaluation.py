@@ -45,7 +45,7 @@ def value_iteration(v_function, gamma, threshold):
         if delta < threshold:
             # Once converged, find the optimal policy
             optimal_policy = calculate_optimal_policy(new_v_function)
-            print(f"\n\nIteration {iteration}:\nValue function converged. Optimal Policy:")
+            print(f"\n\nIteration {iteration}:\nValue function converged.")
             print(new_v_function)
             print("\nOptimal Policy: ")
             print(optimal_policy)
