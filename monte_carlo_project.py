@@ -1,6 +1,8 @@
-#initialize circle_points, square_points and interval to 0
-
 '''
+4/3
+
+initialize circle_points, square_points and interval to 0
+
 Loop:
 
 Generate random point x
@@ -24,8 +26,8 @@ interval = 1000
 # Loop
 for _ in range(interval):
     # Generate random point x and y
-    x = random.uniform(0, 1)
-    y = random.uniform(0, 1)
+    x = random.uniform(-1, 1)
+    y = random.uniform(-1, 1)
     
     # Calculate d = x * x + y * y
     d = x * x + y * y
