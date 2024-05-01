@@ -9,7 +9,7 @@ class SARSA_ParkingLot(ParkingLot):
         super().__init__(num_spots)
         self.q_table = np.zeros(num_spots)  # Initialize Q-values for each spot
 
-    def choose_action(self, epsilon=0.1):
+    def choose_action(self, epsilon=0.9):
         """Choose an action using an epsilon-greedy policy based on Q-values."""
         available_spots = [i for i in range(self.num_spots) if self.spots[i] is None]
         if random.random() < epsilon:  # Explore: choose a random available spot
@@ -26,27 +26,29 @@ class SARSA_ParkingLot(ParkingLot):
             next_q = self.q_table[next_action] if next_action is not None else 0
             self.q_table[action] = current_q + alpha * (reward + gamma * next_q - current_q)
 
-def simulate_sarsa(episodes=100, alpha=0.5, gamma=0.9, epsilon=0.1, arrival_probability=0.75):
+def simulate_sarsa(episodes=100, alpha=0.5, gamma=0.9, epsilon_decay=0.99):
     lot = SARSA_ParkingLot(10)
-    q_values_over_time = np.zeros((episodes, 10))  # Store Q-values for each spot over time
-    
+    q_values_over_time = np.zeros((episodes, 10))
+    epsilon = 0.9  # Start with higher epsilon for more initial exploration
+
     for e in range(episodes):
         print(f"\nEpisode {e+1}")
-        if random.random() < arrival_probability:
+        epsilon *= epsilon_decay  # Decrease epsilon over time for less exploration
+        if random.random() < 0.75:
             car = Car(e)
             action = lot.choose_action(epsilon)
             if action is not None:
+                reward = 10 - car.parking_time  # Change reward structure
                 lot.park_car(car, action)
-                reward = -car.parking_time
                 next_action = lot.choose_action(epsilon)
-                next_state = lot.get_parking_status()
                 lot.update_q_value(None, action, reward, None, next_action, alpha, gamma)
             else:
-                print("No available action was found.")
+                print("No available action found.")
         else:
             print("No car arrived this step.")
         lot.update_time(1)
         q_values_over_time[e, :] = lot.q_table
+        print()
         print(lot)
         print(f"Q-Table: {lot.q_table}")
 
