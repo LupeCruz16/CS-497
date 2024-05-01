@@ -1,4 +1,5 @@
 from parking_lot import ParkingLot
+import matplotlib.pyplot as plt
 from car import Car
 import numpy as np
 import random
@@ -25,22 +26,18 @@ class SARSA_ParkingLot(ParkingLot):
             next_q = self.q_table[next_action] if next_action is not None else 0
             self.q_table[action] = current_q + alpha * (reward + gamma * next_q - current_q)
 
-'''
-The reward for parking a car is defined as the negative of the parking time (-car.parking_time). 
-This approach implies that the longer a car is parked, the more negative the reward. This setup 
-is intended to minimize the parking duration in terms of cost, which could be interpreted as aiming 
-to minimize congestion or maximize turnover in the parking lot.
-'''
 def simulate_sarsa(episodes=100, alpha=0.5, gamma=0.9, epsilon=0.1, arrival_probability=0.75):
     lot = SARSA_ParkingLot(10)
+    q_values_over_time = np.zeros((episodes, 10))  # Store Q-values for each spot over time
+    
     for e in range(episodes):
         print(f"\nEpisode {e+1}")
-        if random.random() < arrival_probability:  # Car arrives with a certain probability
-            car = Car(e)  # Create a new car for each potential parking event
+        if random.random() < arrival_probability:
+            car = Car(e)
             action = lot.choose_action(epsilon)
             if action is not None:
                 lot.park_car(car, action)
-                reward = -car.parking_time  # Define reward: negative of parking time
+                reward = -car.parking_time
                 next_action = lot.choose_action(epsilon)
                 next_state = lot.get_parking_status()
                 lot.update_q_value(None, action, reward, None, next_action, alpha, gamma)
@@ -48,9 +45,21 @@ def simulate_sarsa(episodes=100, alpha=0.5, gamma=0.9, epsilon=0.1, arrival_prob
                 print("No available action was found.")
         else:
             print("No car arrived this step.")
-        lot.update_time(1)  # Simulate time passing
-        print()
+        lot.update_time(1)
+        q_values_over_time[e, :] = lot.q_table
         print(lot)
         print(f"Q-Table: {lot.q_table}")
+
+    # Plotting the Q-values after all episodes
+    plt.figure(figsize=(12, 8))
+    for i in range(10):
+        plt.plot(q_values_over_time[:, i], label=f'Spot {i}')
+    plt.title('Q-values Over Episodes')
+    plt.xlabel('Episode')
+    plt.ylabel('Q-value')
+    plt.legend(loc='upper right')
+    plt.grid(True)
+    plt.savefig('Q_values_over_episodes.png')  # Save the plot as a PNG file
+    plt.close()  # Close the plot to free up memory
 
 simulate_sarsa()
