@@ -25,6 +25,12 @@ class SARSA_ParkingLot(ParkingLot):
             next_q = self.q_table[next_action] if next_action is not None else 0
             self.q_table[action] = current_q + alpha * (reward + gamma * next_q - current_q)
 
+'''
+The reward for parking a car is defined as the negative of the parking time (-car.parking_time). 
+This approach implies that the longer a car is parked, the more negative the reward. This setup 
+is intended to minimize the parking duration in terms of cost, which could be interpreted as aiming 
+to minimize congestion or maximize turnover in the parking lot.
+'''
 def simulate_sarsa(episodes=100, alpha=0.5, gamma=0.9, epsilon=0.1, arrival_probability=0.75):
     lot = SARSA_ParkingLot(10)
     for e in range(episodes):
