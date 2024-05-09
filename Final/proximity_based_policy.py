@@ -61,7 +61,7 @@ def simulate_sarsa(episodes=100, alpha=0.5, gamma=0.9, epsilon_decay=0.99):
     plt.ylabel('Q-value')
     plt.legend(loc='upper right')
     plt.grid(True)
-    plt.savefig('Closest_to_enterance.png')  # Save the plot as a PNG file
+    plt.savefig('Proximity_based_parking.png')  # Save the plot as a PNG file
     plt.close()  # Close the plot to free up memory
 
 simulate_sarsa()
