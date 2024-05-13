@@ -39,6 +39,6 @@ class ParkingLot:
         return all(spot is None for spot in self.spots)
 
     def __repr__(self):
-        # Generate a concise one-line representation of the parking lot status
+        # A concise one-line representation of the parking lot status
         status = ["Empty" if car is None else f"Car {car.car_id}" for car in self.spots]
         return f"{' | '.join(status)}"
